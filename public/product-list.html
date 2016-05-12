@@ -1,0 +1,308 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1>商品管理<small class="dn">各分类下的商品管理</small></h1>
+</section>
+
+<!-- Main content -->
+<section class="content" id="product-list-vue">
+	<!--商品列表-->
+	<div class="box box-primary">
+		<div class="box-header">
+			<h3 class="box-title">商品列表</h3>
+			<div class="box-tools">
+				<button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#product-modal" @click="newGood">新增商品</button>
+			</div>
+		</div>
+		<div class="box-body">
+			<table class="table table-bordered table-striped table-hover" id="product-table">
+				<thead>
+					<tr>
+						<th width="150" id="good_id"></th>
+						<th width="150" id="table_name"></th>
+						<th width="300">商品名称</th>
+						<th width="150">售价/原价<small>（¥）</small></th>
+						<th width="150">分类</th>
+						<th width="100">上架</th>
+						<!--<th width="200">定时上架</th>-->
+						<th width="100">推荐</th>
+						<th width="100">库存</th>
+						<th width="100">活动标签</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="modal fade" id="product-modal">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">商品编辑</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="row">
+								<div class="col-xs-6">
+									<div class="form-group">
+										<label>商品名称</label>
+										<input type="text" class="form-control" maxlength="50" v-model="g.name"/>
+									</div>
+									<div class="form-group">
+										<label>分类</label>
+										<select class="form-control" id="pm-sort" v-model="g.category_id" :disabled="!if_new">
+											<option v-for="c in categories" :value="c.id">{{c.name}}</option>
+											<!--
+											<option>请选择商品分类</option>
+											<option>鞋/箱包</option>
+											<option>手表眼镜</option>
+											<option>美妆护肤</option>
+											<option>手机数码</option>
+											<option>家用电器</option>
+											<option>居家生活</option>
+											<option>家具建材</option>
+											<option>食品/医药保健</option>
+											<option>图书音像</option>
+											<option>女装</option>
+											<option>男装</option>
+											<option>母婴用品</option>
+											-->
+										</select>
+									</div>
+
+									<div class="form-group" v-show="false">
+										<label>折扣 {{altered.discount}}%</label>
+										<div class="input-group">
+											<span class="input-group-addon">%</span>
+											<!--<input type="text" class="form-control" maxlength="6" id="pm-sj-inp" v-model="g.discount">-->
+											<input type="range" max="100" min="0" class="form-control" maxlength="6" id="pm-sj-inp-1" v-model="altered.discount">
+										</div>
+									</div>
+
+									<div class="form-group" style="display:none">
+										<label>推荐</label>
+										<select class="form-control" v-model="altered.if_recommended">
+											<option value="0">不推荐</option>
+											<option value="1">推荐</option>
+										</select>
+									</div>
+
+								</div>
+								<div class="col-xs-6">
+									<div class="form-group" style="display:none">
+										<label>活动标签</label>
+										<!--<input type="text" class="form-control" maxlength="10"/>-->
+										<select class="form-control" v-model="g.broadcasting_id">
+											<option value="-1">无</option>
+											<option v-for="b in broadcasting" :value="b.id">{{b.name}}</option>
+										</select>
+									</div>
+
+									<div class="form-group">
+										<label>库存</label>
+										<input type="text" class="form-control" maxlength="4" v-model="g.left">
+									</div>
+
+									<div class="form-group">
+										<label>原价</label>
+										<div class="input-group">
+											<span class="input-group-addon">¥</span>
+											<input type="text" class="form-control" maxlength="6" id="pm-sj-inp" v-model="g.price">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label>包邮</label>
+										<div class="input-group">
+											<span class="input-group-addon" >
+								              <input type="checkbox" checked id="pm-pack-checkbox" v-model="altered.if_mail"/>
+								            </span>
+											<input type="text" class="form-control" :disabled="altered.if_mail" id="pm-pack-input" v-model="altered.mail_cost" />
+											<span class="input-group-addon">¥</span>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group" data-toggle="tooltip" data-placement="bottom" title="长宽均640px即可">
+								<label>大图</label>
+								<input type="file" class="form-control pm-img-file" accept="image/jpeg,image.jpg" id="add_good_img"/>
+							</div>
+							<div class="form-group toutu">
+								<ul>
+									<li v-for="im in altered.imgs"><button type="button" class="btn btn-xs btn-warning" @click="delIm($index)">×</button><img :src="im"></li>
+								</ul>
+							</div>
+
+							<div class="form-group" data-toggle="tooltip" data-placement="bottom" title="长宽均640px即可,最多上传3张" v-show="false">
+								<label>推荐信息</label>
+								<input type="text" class="form-control" v-model="gr.name"/>
+								<input type="file" class="form-control" style="margin-top: 10px;" ccept="image/jpeg,image.jpg" id="pm-img-file" />
+							</div>
+							<div class="form-group toutu" v-show="false">
+								<ul>
+									<li v-show="gr.img"><button type="button" class="btn btn-xs btn-warning" @click="delGrIm">×</button><img :src="gr.img"></li>
+								</ul>
+							</div>
+
+							<div class="form-group">
+								<label>上架</label>
+								<div class="input-group input-group-xs">
+									<div class="input-group-btn">
+										<button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-expanded="false" id="pm-sale-btn">{{!!parseInt(g.if_valid)?"立即上架":"暂不上架"}}<span class="fa fa-caret-down"></span></button>
+										<ul class="dropdown-menu" id="pm-sale-list">
+											<li @click="g.if_valid = 0"><a>暂不上架</a></li>
+											<li @click="g.if_valid = 1"><a>立即上架</a></li>
+											<!--<li><a href="#">定时上架</a></li>-->
+										</ul>
+									</div>
+									<!-- /btn-group -->
+									<!--<input type="text" class="form-control" disabled id="pm-sale-input">-->
+								</div>
+							</div>
+
+							<div class="form-group" v-show="false">
+								<label>服务承诺</label>
+								<select class="form-control service" multiple data-placeholder="请选择提供的服务" style="width: 100%;" v-model="altered.tags" id="good_tags">
+									<option value="if_real">正品保证</option>
+									<option value="if_7_days">7天无理由退款</option>
+									<option value="if_in_24">最快24小时发货</option>
+									<option value="if_brand">品牌直达</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="col-sm-6" v-show="false">
+							<div class="form-group" id="pm-xinghao" data-toggle="tooltip" data-placement="bottom" title="输入型号与价格,'|'间隔,回车确认">
+								<label>版本<input type="checkbox" v-model="show_vars.editions"/></label>
+								<input type="text" class="form-control" placeholder="例:全网通/3000" id="pm-xinghao-inp" :disabled="!show_vars.editions" @keyup.enter="newAttr($event, 'editions')"/>
+								<div class="pm-xinghao-list">
+									<div class="input-group" v-for="e in altered.editions">
+										<span class="input-group-addon" @click="delEdition($index, e)">X</span>
+										<input type="text" class="form-control" v-model="e.compose">
+									</div>
+								</div>
+							</div>
+							<div class="form-group" id="pm-peijian" data-toggle="tooltip" data-placement="bottom" title="输入配件与价格,'|'间隔,回车确认">
+								<label>套餐<input type="checkbox" v-model="show_vars.combos"/></label>
+								<input type="text" class="form-control" placeholder="例:袜子/30" id="pm-peijian-inp" :disabled="!show_vars.combos"  @keyup.enter="newAttr($event, 'combos')"/>
+								<div class="pm-peijian-list">
+									<div class="input-group" v-for="c in altered.combos">
+										<span class="input-group-addon" @click="delCombo($index, c)">X</span>
+										<input type="text" class="form-control" v-model="c.compose">
+									</div>
+								</div>
+							</div>
+							<div class="form-custom">
+								<div class="form-group" v-show="show_vars.size">
+									<label>{{g.name}} 尺码</label>
+									<div class="input-group">
+										<span class="input-group-addon">
+											<input type="checkbox"checked id="pm-pack-checkbox"/>
+										</span>
+										<select class="form-control chima" multiple="multiple" style="width: 100%;" v-model="altered.sizes" id="good_sizes">
+											<option v-for="i in sizes" :value="i">{{i}}</option>
+										</select>
+									</div>
+								</div>
+
+								<!--
+								<div class="form-group" id="size2" v-show="g.category_id == 5"><label>衣服 尺码</label><div class="input-group"><span class="input-group-addon"><input type="checkbox"checked id="pm-pack-checkbox"/></span><select class="form-control fu-chima"multiple="multiple"style="width: 100%;"><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>XXXL</option><option>XXXXL</option></select></div></div>
+
+								<div class="form-group" id="size3"><label>箱 尺寸</label><div class="input-group"><span class="input-group-addon"><input type="checkbox"checked id="pm-pack-checkbox"/></span><select class="form-control xiang-chicun"multiple="multiple"style="width: 100%;"><option>15寸</option><option>16寸</option><option>17寸</option><option>18寸</option><option>20寸</option><option>24寸</option><option>27寸</option><option>28寸</option><option>29寸</option><option>32寸</option></select></div></div>
+								-->
+
+								<div class="form-group" v-show="show_vars.color">
+									<label>颜色</label>
+									<div class="input-group">
+										<span class="input-group-addon">
+											<input type="checkbox"checked v-model="show_vars.color" disabled/>
+										</span>
+										<select class="form-control color" multiple="multiple" style="width: 100%;" v-model="altered.colors" id="good_colors">
+											<option>乳白色</option>
+											<option>白色</option>
+											<option>米白色</option>
+											<option>浅灰色</option>
+											<option>深灰色</option>
+											<option>灰色</option>
+											<option>银色</option>
+											<option>黑色</option>
+											<option>杏红色</option>
+											<option>玫红色</option>
+											<option>粉红色</option>
+											<option>红色</option>
+											<option>酒红色</option>
+											<option>枣红色</option>
+											<option>卡其色</option>
+											<option>明黄色</option>
+											<option>杏色</option>
+											<option>柠檬黄</option>
+											<option>桔色</option>
+											<option>浅黄色</option>
+											<option>荧光黄</option>
+											<option>金色</option>
+											<option>香槟色</option>
+											<option>黄色</option>
+											<option>军绿色</option>
+											<option>墨绿色</option>
+											<option>浅绿色</option>
+											<option>绿色</option>
+											<option>翠绿色</option>
+											<option>青色</option>
+											<option>天蓝色</option>
+											<option>孔雀蓝</option>
+											<option>宝蓝色</option>
+											<option>浅蓝色</option>
+											<option>深蓝色</option>
+											<option>湖蓝色</option>
+											<option>蓝色</option>
+											<option>藏青色</option>
+											<option>浅素色</option>
+											<option>深紫色</option>
+											<option>紫红色</option>
+											<option>紫罗兰</option>
+											<option>紫色</option>
+											<option>咖啡色</option>
+											<option>巧克力色</option>
+											<option>栗色</option>
+											<option>浅棕色</option>
+											<option>深棕色</option>
+											<option>褐色</option>
+											<option>驼色</option>
+										</select></div></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" @click="checkAttrs">确定</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+</section>
+<!-- /.content -->
+
+<!-- Data Tables -->
+<link rel="stylesheet" href="plugins/datatables/dataTables.bootstrap.css">
+<script src="plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="plugins/datatables/dataTables.bootstrap.min.js"></script>
+<!-- Select 2 -->
+<link rel="stylesheet" type="text/css" href="plugins/select2/select2.min.css" />
+<!-- Date-range-picker -->
+<link rel="stylesheet" type="text/css" href="plugins/daterangepicker/daterangepicker-bs3.css"/>
+<script src="plugins/daterangepicker/moment.min.js"></script>
+<script src="plugins/daterangepicker/daterangepicker.js"></script>
+
+<script src="plugins/select2/select2.full.min.js" type="text/javascript" charset="utf-8"></script>
+<!--<script src="assets/js/product-list.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="assets/lib/product-list.js" type="text/javascript" charset="utf-8"></script>

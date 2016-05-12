@@ -1,0 +1,171 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1>首页<small>店铺状态、信息统计、基本信息配置</small></h1>
+</section>
+
+<!-- Main content -->
+<section class="content">
+	<!-- Small boxes (Stat box) -->
+	<div class="row main-box">
+		<div class="col-lg-3 col-xs-6 main-order-box">
+			<div class="small-box bg-aqua">
+				<div class="inner">
+					<h3>150</h3>
+
+					<p>总订单数</p>
+				</div>
+				<div class="icon">
+					<i class="ion ion-ios-filing-outline"></i>
+				</div>
+				<a href="#" class="small-box-footer">查看详情 <i class="fa fa-arrow-circle-right"></i></a>
+			</div>
+		</div>
+		<div class="col-lg-3 col-xs-6 main-repair-box">
+			<div class="small-box bg-green">
+				<div class="inner">
+					<h3>53</h3>
+
+					<p>总商品数</p>
+				</div>
+				<div class="icon">
+					<i class="ion ion-bag"></i>
+				</div>
+				<a href="#" class="small-box-footer">查看详情 <i class="fa fa-arrow-circle-right"></i></a>
+			</div>
+		</div>
+		<div class="col-lg-3 col-xs-6 main-repair-box">
+			<div class="small-box bg-red">
+				<div class="inner">
+					<h3>53</h3>
+
+					<p>推荐商品总数</p>
+				</div>
+				<div class="icon">
+					<i class="ion ion-bag"></i>
+				</div>
+				<a href="#" class="small-box-footer">查看详情 <i class="fa fa-arrow-circle-right"></i></a>
+			</div>
+		</div>
+		<div class="col-lg-3 col-xs-6 main-repair-box">
+			<div class="small-box bg-yellow">
+				<div class="inner">
+					<h3>531</h3>
+
+					<p>总用户数</p>
+				</div>
+				<div class="icon">
+					<i class="ion ion-ios-people"></i>
+				</div>
+				<a href="#" class="small-box-footer">今日增加 50</a>
+			</div>
+		</div>
+	</div>
+	<!-- /.row -->
+	<!-- Main row -->
+	<div class="row">
+		<!-- Left col -->
+		<section class="col-lg-6">
+
+			<!-- 成交量/成交额 -->
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<h3 class="box-title">成交量/成交额</h3>
+				</div>
+				<div class="box-body chart-responsive">
+					<div class="chart" id="revenue-chart" style="height: 300px;"></div>
+				</div>
+				<!-- /.box-body -->
+			</div>
+
+			<!-- 订单统计 -->
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<h3 class="box-title">订单统计</h3>
+				</div>
+				<!-- /.box-header -->
+				<div class="box-body">
+					<div class="table-responsive">
+						<table class="table no-margin">
+							<thead>
+								<tr>
+									<th>类目</th>
+									<th>数量</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>待付款订单数</td>
+									<td><span class="label label-danger">12</span></td>
+									<td><a href="javascript:" class="btn btn-sm btn-default btn-flat">查看</a></td>
+								</tr>
+								<tr>
+									<td>待发货订单数</td>
+									<td><span class="label label-warning">23</span></td>
+									<td><a href="javascript:" class="btn btn-sm btn-default btn-flat">查看</a></td>
+								</tr>
+								<tr>
+									<td>待收货订单数</td>
+									<td><span class="label label-success">50</span></td>
+									<td><a href="javascript:" class="btn btn-sm btn-default btn-flat">查看</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- /.table-responsive -->
+				</div>
+				<!-- /.box-body -->
+			</div>
+
+		</section>
+		<!-- /.Left col -->
+		<!-- right col -->
+		<section class="col-lg-6">
+
+			<!-- 每日增加用户 -->
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<h3 class="box-title">每日增加用户</h3>
+				</div>
+				<div class="box-body chart-responsive">
+					<div class="chart" id="line-chart" style="height: 300px;"></div>
+				</div>
+				<!-- /.box-body -->
+			</div>
+
+			<!-- 基本信息配置 -->
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<h3 class="box-title">基本信息配置</h3>
+				</div>
+				<!-- /.box-header -->
+				<!-- form start -->
+				<form role="form">
+					<div class="box-body">
+						<div class="form-group">
+							<label>店铺标题</label>
+							<input type="email" class="form-control" placeholder="请输入店铺标题">
+						</div>
+					</div>
+					<!-- /.box-body -->
+
+					<div class="box-footer">
+						<button type="submit" class="btn btn-primary">提交</button>
+					</div>
+				</form>
+			</div>
+		</section>
+		<!-- right col -->
+	</div>
+	<!-- /.row (main row) -->
+
+</section>
+<!-- /.content -->
+
+<link rel="stylesheet" type="text/css" href="plugins/morris/morris.css" />
+<script src="plugins/morris/raphael-min.js"></script>
+<script src="plugins/morris/morris.min.js"></script>
+<script src="assets/js/main.js"></script>
+
+<!-- back -->
+<script src="assets/lib/index.js"></script>

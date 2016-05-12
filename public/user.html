@@ -1,0 +1,349 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1>会员管理<small>店铺内的会员管理</small></h1>
+</section>
+
+<!-- Main content -->
+<section class="content" id="vm_user">
+	<div class="box box-primary">
+		<div class="box-header">
+			<h3 class="box-title">会员列表</h3>
+		</div>
+		<div class="box-body">
+			<table class="table table-bordered table-striped table-hover" id="product-table">
+				<thead>
+					<tr>
+						<th width="100">编号</th>
+						<th width="200">名称</th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th width="150">手机号</th>
+						<th width="150">历史消费</th>
+						<th width="150">历史订单</th>
+						<th width="150">历史积分</th>
+						<th width="150">注册日期</th>
+						<!--<th width="150">上次登陆</th>-->
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="modal fade" id="user-modal">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">会员信息</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-3">
+
+							<!-- Profile Image -->
+							<div class="box box-primary">
+								<div class="box-body box-profile">
+									<img class="profile-user-img img-responsive img-circle" :src="user.pic">
+									<h3 class="profile-username text-center">{{user.nick_name}}</h3>
+									<p class="text-muted text-center">{{user.sex=='1'?"男":"女"}} | {{user.phone}}</p>
+									<ul class="list-group list-group-unbordered">
+										<li class="list-group-item">
+											<b>历史消费</b> <a class="pull-right">{{user.total}}</a>
+										</li>
+										<li class="list-group-item">
+											<b>历史订单</b> <a class="pull-right">{{user.cnt}}</a>
+										</li>
+										<li class="list-group-item">
+											<b>历史积分</b> <a class="pull-right" id="user_credits">{{user.credits}}</a>
+										</li>
+										<li class="list-group-item">
+											<b>注册日期</b> <a class="pull-right">{{user.log_time}}</a>
+										</li>
+										<!--
+										<li class="list-group-item">
+											<b>上次登陆</b> <a class="pull-right">2015-01-01 13:12:12</a>
+										</li>
+										-->
+									</ul>
+									<div class="row">
+										<div class="col-sm-6">
+											<button class="btn btn-primary btn-block" data-toggle="modal" data-target="#credit-modal" @click="initCreditsForAdd">发放积分</button>
+										</div>
+										<div class="col-sm-6">
+											<button class="btn btn-info btn-block" data-toggle="modal" data-target="#ticket-modal" @click="initCouponForAdd">发放优惠券</button>
+										</div>
+									</div>
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+
+							<!-- About Me Box -->
+							<div class="box box-primary">
+								<div class="box-header with-border">
+									<h3 class="box-title">收货地址</h3>
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body">
+									<template v-for="l in locations">
+										<strong><i class="fa fa-map-marker margin-r-5"></i> {{l.location}}</strong>
+										<hr>
+									</template>
+									<!--
+									<strong><i class="fa fa-map-marker margin-r-5"></i> 汤姆 | 18036129432</strong>
+									<p class="text-muted">
+										浙江省杭州市上城区学院路135号
+									</p>
+									<hr>
+									-->
+								</div>
+								<!-- /.box-body -->
+							</div>
+							<!-- /.box -->
+						</div>
+						<!-- /.col -->
+						<div class="col-md-9">
+							<div class="nav-tabs-custom">
+								<ul class="nav nav-tabs">
+									<li class="active"><a href="#consume" data-toggle="tab">消费明细</a></li>
+									<li><a href="#credit" data-toggle="tab">积分明细</a></li>
+									<li><a href="#ticket" data-toggle="tab">现有优惠券</a></li>
+								</ul>
+								<div class="tab-content">
+									<div class="active tab-pane" id="consume">
+										<div class="box-body">
+											<table class="table table-bordered">
+												<tbody>
+													<tr>
+														<th>#</th>
+														<th>消费金额</th>
+														<th>消费日期</th>
+													</tr>
+													<tr v-for="c in consumes">
+														<td>{{$index+1}}.</td>
+														<td>{{c.total}}</td>
+														<td>{{c.log_time}}</td>
+													</tr>
+													<!--
+													<tr>
+														<td>2.</td>
+														<td>Clean database</td>
+														<td>2015-01-01 12:34:12</td>
+													</tr>
+													-->
+												</tbody>
+											</table>
+										</div>
+										<!-- /.box-body -->
+										<div class="box-footer clearfix">
+											<ul class="pagination pagination-sm no-margin pull-right">
+												<li><a class="page_consume_former">«</a></li>
+												<li><a class="page_consume">1</a></li>
+												<li><a class="page_consume">2</a></li>
+												<li><a class="page_consume">3</a></li>
+												<li><a class="page_consume">4</a></li>
+												<li><a class="page_consume">3</a></li>
+												<li><a class="page_consume_next">»</a></li>
+											</ul>
+										</div>
+									</div>
+									<!-- /.tab-pane -->
+									<div class="tab-pane" id="credit">
+										<div class="box-body">
+											<table class="table table-bordered">
+												<tbody>
+													<tr>
+														<th>#</th>
+														<th>变动原因</th>
+														<th>变动时间</th>
+														<th>使用积分</th>
+													</tr>
+													<tr v-for="c in credits">
+														<td>{{$index+1}}.</td>
+														<td>{{c.event}}</td>
+														<td>{{c.log_time}}</td>
+														<td><span class="text-success">{{c.credits}}</span></td>
+													</tr>
+													<!--
+													<tr>
+														<td>2.</td>
+														<td>充值</td>
+														<td>2015-01-01 12:34:12</td>
+														<td><span class="text-danger">+ 500</span></td>
+														<td>4000</td>
+													</tr>
+													-->
+												</tbody>
+											</table>
+										</div>
+										<!-- /.box-body -->
+										<div class="box-footer clearfix">
+											<ul class="pagination pagination-sm no-margin pull-right">
+												<li><a class="page_credit_former">«</a></li>
+												<li><a class="page_credit">1</a></li>
+												<li><a class="page_credit">2</a></li>
+												<li><a class="page_credit">3</a></li>
+												<li><a class="page_credit">4</a></li>
+												<li><a class="page_credit">5</a></li>
+												<li><a class="page_credit_next">»</a></li>
+											</ul>
+										</div>
+									</div>
+									<!-- /.tab-pane -->
+									<div class="tab-pane" id="ticket">
+										<div class="box-body">
+											<table class="table table-bordered">
+												<tbody>
+													<tr>
+														<th>#</th>
+														<th>优惠金额</th>
+														<th>使用时间</th>
+														<!--<th>获取来源</th>-->
+													</tr>
+													<tr v-for="c in coupons">
+														<td>{{$index+1}}.</td>
+														<td>{{c.price}}</td>
+														<td>{{c.date_from}} —— {{c.date_to}}</td>
+														<!--<td>官方发放</td>-->
+													</tr>
+													<!--
+													<tr>
+														<td>2.</td>
+														<td>满500减100</td>
+														<td>2015-01-01 —— 2015-05-01</td>
+														<td>官方发放</td>
+													</tr>
+													-->
+												</tbody>
+											</table>
+										</div>
+										<!-- /.box-body -->
+									</div>
+									<!-- /.tab-pane -->
+								</div>
+								<!-- /.tab-content -->
+							</div>
+							<!-- /.nav-tabs-custom -->
+						</div>
+						<!-- /.col -->
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" @click="addCoupon">确定</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+	<div class="modal fade" id="credit-modal">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">发放积分</h4>
+				</div>
+				<div class="modal-body">
+					<!--<h6>现有积分:{{total_credits}}</h6>-->
+					<div class="form-group">
+						<input type="number" step=10 maxlength="5" placeholder="请输入欲增加的积分" class="form-control" v-model="credits_for_add.credits"/>
+					</div>
+					<div class="form-group">
+						<input type="text" placeholder="请输入添加的原因" class="form-control" v-model="credits_for_add.event"/>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" @click="addCredits">确定</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+	<div class="modal fade" id="ticket-modal">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">发放优惠券</h4>
+				</div>
+				<div class="modal-body">
+					<!--
+					<div class="form-group">
+						<label>优惠券类型</label>
+						<select class="form-control" id="ticket-type">
+							<option>请选择优惠券类型</option>
+							<option>满减</option>
+							<option>无限制</option>
+						</select>
+					</div>
+					-->
+
+					<div class="form-group">
+						<label>开始时间</label>
+						<input type="date" class="form-control" id="coupon_date_from"/>
+					</div>
+
+					<div class="form-group">
+						<label>结束时间</label>
+						<input type="date" class="form-control" id="coupon_date_to"/>
+					</div>
+
+					<div class="form-group disabled">
+						<label>金额</label>
+						<input type="text" class="form-control" id="ticket-unlimited" v-model="coupon_price"/>
+					</div>
+
+					<!--
+					<div class="form-group">
+						<label>获取来源</label>
+						<input type="text" class="form-control" />
+					</div>
+
+					<div class="row">
+						<div class="col-xs-5">
+							<input type="text" class="form-control ticket-fullToOff" disabled id=""/>
+						</div>
+						<div class="col-xs-2">减</div>
+						<div class="col-xs-5">
+							<input type="text" class="form-control ticket-fullToOff" disabled/>
+						</div>
+					</div>
+					-->
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" @click="addCoupon">确定</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+</section>
+<!-- /.content -->
+
+<!-- Data Tables -->
+<link rel="stylesheet" href="plugins/datatables/dataTables.bootstrap.css">
+<script src="plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="plugins/datatables/dataTables.bootstrap.min.js"></script>
+<!-- Date-range-picker -->
+<link rel="stylesheet" type="text/css" href="plugins/daterangepicker/daterangepicker-bs3.css" />
+<script src="plugins/daterangepicker/moment.min.js"></script>
+<script src="plugins/daterangepicker/daterangepicker.js"></script>
+
+<!--<script src="assets/js/user.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="assets/lib/user.js" type="text/javascript" charset="utf-8"></script>

@@ -1,0 +1,280 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1>订单管理<small>店铺订单的管理</small></h1>
+</section>
+
+<!-- Main content -->
+<section class="content" id="vm_orders">
+	<div class="box box-primary">
+		<div class="box-header">
+			<h3 class="box-title">订单列表</h3>
+		</div>
+		<div class="box-body">
+			<table class="table table-bordered table-striped table-hover" id="order-table">
+				<thead>
+					<tr>
+						<th width="100">编号</th>
+						<th width="100">用户</th>
+						<th></th>
+						<th width="100">电话</th>
+						<th width="150">下单时间</th>
+						<th width="300">商品名称</th>
+						<th width="100">金额</th>
+						<th width="100">状态</th>
+						<th width="100">操作</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="modal fade" id="order-modal">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">订单详情</h4>
+				</div>
+				<div class="modal-body">
+					<div class="no-print">
+						<div class="callout callout-info" style="margin-bottom: 0!important;" v-show="detail.if_success == 0">
+							<h4><i class="fa fa-info"></i> 订单状态:</h4> 待付款
+						</div>
+						<div class="callout callout-info" style="margin-bottom: 0!important;" v-show="detail.if_success == 1">
+							<h4><i class="fa fa-info"></i> 订单状态:</h4> 物流中
+						</div>
+						<div class="callout callout-warning" style="margin-bottom: 0!important;" v-show="detail.if_success == 2">
+							<h4><i class="fa fa-info"></i> 订单状态:</h4> 待评价
+						</div>
+						<div class="callout callout-danger" style="margin-bottom: 0!important;" v-show="detail.if_success == 3">
+							<h4><i class="fa fa-info"></i> 订单状态:</h4> 交易完成
+						</div>
+					</div>
+					<!--
+					<div class="no-print">
+						<div class="callout callout-success" style="margin-bottom: 0!important;">
+							<h4><i class="fa fa-info"></i> 订单状态:</h4> 已完成
+						</div>
+					</div>
+					-->
+
+					<!-- Main content -->
+					<section class="invoice">
+						<!-- title row -->
+						<div class="row">
+							<div class="col-xs-12">
+								<h2 class="page-header"><i class="fa fa-inbox"></i> #{{detail.order_no}}</h2>
+							</div>
+							<!-- /.col -->
+						</div>
+						<!-- info row -->
+						<div class="row invoice-info">
+							<div class="col-sm-4 invoice-col">
+								基本信息
+								<hr />
+								<address>
+            						<strong>购货人：{{detail.nick_name}}</strong><br>
+          							<b>支付方式：</b>支付宝<br>
+						            <b>下单时间：</b>{{detail.log_time}}<br>
+						            <!--<b>付款时间：</b>2012-01-01 13:22:23<br>
+						            <b>发货时间：</b>2012-01-01 13:22:23-->
+					          	</address>
+							</div>
+							<!-- /.col -->
+							<div class="col-sm-4 invoice-col">
+								收货人信息
+								<hr />
+								<address>
+						            <strong>收货人：{{detail.nick_name}}</strong><br>
+						            <b>电话：</b>{{detail.phone}}<br>
+					            	<b>地址：</b>{{detail.location}}
+					          	</address>
+							</div>
+							<!-- /.col -->
+							<div class="col-sm-4 invoice-col">
+								备注信息
+								<hr /> {{detail.remarks}}
+							</div>
+							<!-- /.col -->
+						</div>
+						<!-- /.row -->
+
+						<!-- Table row -->
+						<div class="row">
+							<div class="col-xs-12 table-responsive">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>编号</th>
+											<th>名称</th>
+											<th>数量</th>
+											<th>规格</th>
+											<th>价格</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr v-for="d in details">
+											<td>#{{$index+1}}</td>
+											<td>{{d.name}}</td>
+											<td>{{d.amount}}</td>
+											<td>{{d.specifics.split("|").join(", ")}}</td>
+											<td>${{d.price}}</td>
+										</tr>
+										<!--
+										<tr>
+											<td>#2</td>
+											<td>Charles&Keith新款女式蝴蝶结细跟鞋CK1-60300517</td>
+											<td>1</td>
+											<td>尺寸:XL 颜色:红色</td>
+											<td>$50.00</td>
+										</tr>
+										-->
+									</tbody>
+								</table>
+							</div>
+							<!-- /.col -->
+						</div>
+						<!-- /.row -->
+
+						<div class="row">
+							<!-- accepted payments column -->
+							<!--
+							<div class="col-xs-6">
+								<p class="lead">操作信息</p>
+								<div class="table-responsive">
+									<table class="table table-striped">
+										<thead>
+											<tr>
+												<th>操作者</th>
+												<th>操作时间</th>
+												<th>订单状态</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>admin</td>
+												<td>2012-01-01 12:34:23</td>
+												<td>已完成</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							-->
+							<!-- /.col -->
+							<div class="col-xs-6">
+								<p class="lead">费用信息</p>
+
+								<div class="table-responsive">
+									<table class="table">
+										<tr>
+											<th style="width:50%">商品总额:</th>
+											<td>${{parseFloat(detail.total)+parseFloat(detail.coupon_pay)+parseFloat(detail.credits_pay)-parseFloat(detail.mail_pay)}}</td>
+										</tr>
+										<tr>
+											<th>运费</th>
+											<td>${{detail.mail_pay}}</td>
+										</tr>
+										<tr>
+											<th>优惠券抵扣</th>
+											<td>${{detail.coupon_pay}}</td>
+										</tr>
+										<tr>
+											<th>积分抵扣</th>
+											<td>${{detail.credits_pay}}</td>
+										</tr>
+										<tr>
+											<th>总计:</th>
+											<th class="text-danger">${{detail.total}}</th>
+										</tr>
+									</table>
+								</div>
+							</div>
+							<!-- /.col -->
+						</div>
+						<!-- /.row -->
+
+						<!-- this row will not appear when printing -->
+						<div class="row no-print">
+							<div class="col-xs-12">
+								<!--<button type="button" class="btn btn-primary pull-right">发货</button>-->
+								<!--<button type="button" class="btn btn-danger pull-right" style="margin-right: 5px;">取消订单</button>-->
+								<button type="button" class="btn btn-warning pull-right" style="margin-right: 5px;" data-toggle="modal" data-target="#price-modal" :disabled="detail.if_success != '0'">修改金额</button>
+								<button type="button" class="btn btn-info pull-right" style="margin-right: 5px;" data-toggle="modal" data-target="#remarks-modal">修改备注</button>
+							</div>
+						</div>
+					</section>
+					<!-- /.content -->
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" @click="updateOrderInfo">确定</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+	<div class="modal fade" id="price-modal">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">修改金额</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label>目前金额:{{detail.total}}</label>
+						<input type="text" class="form-control" placeholder="请输入您想要修改的金额 " v-model="buffer.total"/>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" @click="updateTotal">确定</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+	<div class="modal fade" id="remarks-modal">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">备注信息</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<textarea placeholder="请输入备注信息" class="form-control" rows="5" v-model="buffer.remarks"></textarea>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" @click="updateRemark">确定</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+</section>
+<!-- /.content -->
+
+<!-- Data Tables -->
+<link rel="stylesheet" href="plugins/datatables/dataTables.bootstrap.css">
+<script src="plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="plugins/datatables/dataTables.bootstrap.min.js"></script>
+
+<!--<script src="assets/js/order.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="assets/lib/order.js" type="text/javascript" charset="utf-8"></script>
